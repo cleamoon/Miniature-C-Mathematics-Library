@@ -12,7 +12,7 @@ typedef struct {
 
 extern const vec VEC_UNDEFINED;
 
-vec allocate(unsigned int dim);
+vec allocateVec(unsigned int dim);
 
 vec constructDefaultVector(unsigned int dim, float val);
 
@@ -22,54 +22,54 @@ vec newVector(unsigned int dim, ...);
 
 #define vector(...) newVector(NUMARGS(float, __VA_ARGS__), ##__VA_ARGS__)
 
-vec copy(vec v);
+vec copyVec(vec v);
 
-vec copyPtr(vec *v); 
+vec copyVecPtr(vec *v); 
 
-void print(vec v);
+void printVec(vec v);
 
-bool equals(vec v1, vec v2);
+bool vecIsEquals(vec v1, vec v2);
 
-vec scalarMultiplication(vec v, float k);
+vec vecScalarMultiplication(vec v, float k);
 
-void scalarMultiplicationBy(vec *v, float k);
+void vecScalarMultiplicationBy(vec *v, float k);
 
-vec scalarDivision(vec v, float k);
+vec vecScalarDivision(vec v, float k);
 
-void scalarDivisionBy(vec *v, float k);
+void vecScalarDivisionBy(vec *v, float k);
 
-vec power(vec v, float k);
+vec vecPower(vec v, float k);
 
-void powerOf(vec *v, float k);
+void vecPowerOf(vec *v, float k);
 
-vec add(vec v1, vec v2);
+vec vecAdd(vec v1, vec v2);
 
-bool addTo(vec *v1, vec v2);
+bool vecAddTo(vec *v1, vec v2);
 
-vec subtract(vec v1, vec v2);
+vec vecSubtract(vec v1, vec v2);
 
-bool subtractFrom(vec *v1, vec v2);
+bool vecSubtractFrom(vec *v1, vec v2);
 
-vec multiply(vec v1, vec v2);
+vec vecMultiply(vec v1, vec v2);
 
-bool multiplyTo(vec *v1, vec v2);
+bool vecMultiplyTo(vec *v1, vec v2);
 
-vec divide(vec v1, vec v2);
+vec vecDivide(vec v1, vec v2);
 
-bool divideBy(vec *v1, vec v2);
+bool vecDivideBy(vec *v1, vec v2);
 
-float dot(vec v1, vec v2); 
+float vecDotProd(vec v1, vec v2); 
 
-bool orthogonal(vec v1, vec v2);
+bool vecIsOrthogonal(vec v1, vec v2);
 
-vec cross(vec v1, vec v2);
+vec vecCrossProd(vec v1, vec v2);
 
-float magnitude(vec v);
+float vecMagnitude(vec v);
 
-float magnitudeSquared(vec v);
+float vecMagnitudeSquared(vec v);
 
-vec normalized(vec v);
+vec vecNormalized(vec v);
 
-void normalize(vec *v);
+void vecNormalize(vec *v);
 
 #endif
