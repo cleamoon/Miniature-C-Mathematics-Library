@@ -35,24 +35,31 @@ int main() {
     #endif
 
     #ifdef MAT_TEST
-    mat m = identityMatrix(3);
-    printMat(m);
+    mat m1 = identityMatrix(3);
+    printMat(m1);
 
     mat m2 = zeroMatrix(5, 3);
     printMat(m2);
 
-    printMat(newMatrix(3, 3, 9, 1., 2., 3., 4., 5., 6., 7., 8., 9.));
-
-    mat m3 = copyPtrMat(&m);
+    mat m3 = newMatrix(3, 3, 9, 1., 2., 3., 4., 5., 6., 7., 8., 9.);
     printMat(m3);
 
-    printVec(getMatRow(&m, 3));
-    printVec(getMatCol(&m, 1));
+    mat m4 = copyPtrMat(&m1);
+    printMat(m4);
 
-    vec v = vector(1., 3.14, 2.72);
+    printVec(getMatRow(&m3, 3));
+    printVec(getMatCol(&m3, 1));
+
+    vec v = vector(1., 2., 3.);
 
     printMat(toRowVec(&v));
     printMat(toColVec(&v));
+
+    printVec(matVecMultiplication(m3, v));
+
+    mat m5 = newMatrix(2, 3, 6, 2., 1., 4., 0., 1., 1.);
+    mat m6 = newMatrix(3, 4, 12, 6., 3., -1., 0., 1., 1., 0., 4., -2., 5., 0., 2.);
+    printMat(matMultiplication(m5, m6));
     #endif
     
     return 0;

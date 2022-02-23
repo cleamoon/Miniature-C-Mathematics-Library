@@ -127,3 +127,184 @@ mat toColVec(vec *v) {
 
     return ret;
 }
+
+mat matScalarAddition(mat m, float k) {
+    mat ret = allocateMat(m.rows, m.cols);
+
+    for (unsigned r = 0; r < ret.rows; r++) {
+        for (unsigned c = 0; c < ret.cols; c++) {
+            ret.elements[r][c] = m.elements[r][c] + k;
+        }
+    }
+
+    return ret;
+}
+
+void matScalarAdditionTo(mat *m, float k) {
+    for (unsigned r = 0; r < m->rows; r++) {
+        for (unsigned c = 0; c < m->cols; c++) {
+            m->elements[r][c] += k;
+        }
+    }
+}
+
+mat matScalarSubtraction(mat m, float k) {
+    mat ret = allocateMat(m.rows, m.cols);
+
+    for (unsigned r = 0; r < ret.rows; r++) {
+        for (unsigned c = 0; c < ret.cols; c++) {
+            ret.elements[r][c] = m.elements[r][c] - k;
+        }
+    }
+
+    return ret;
+}
+
+void matScalarSubtractionTo(mat *m, float k) {
+    for (unsigned r = 0; r < m->rows; r++) {
+        for (unsigned c = 0; c < m->cols; c++) {
+            m->elements[r][c] -= k;
+        }
+    }
+}
+
+mat matScalarMultiplication(mat m, float k) {
+    mat ret = allocateMat(m.rows, m.cols);
+
+    for (unsigned r = 0; r < ret.rows; r++) {
+        for (unsigned c = 0; c < ret.cols; c++) {
+            ret.elements[r][c] = m.elements[r][c] * k;
+        }
+    }
+
+    return ret;
+}
+
+void matScalarMultiplicationTo(mat *m, float k) {
+    for (unsigned r = 0; r < m->rows; r++) {
+        for (unsigned c = 0; c < m->cols; c++) {
+            m->elements[r][c] *= k;
+        }
+    }
+}
+
+mat matScalarDivision(mat m, float k) {
+    mat ret = allocateMat(m.rows, m.cols);
+
+    for (unsigned r = 0; r < ret.rows; r++) {
+        for (unsigned c = 0; c < ret.cols; c++) {
+            ret.elements[r][c] = m.elements[r][c] / k;
+        }
+    }
+
+    return ret;
+}
+
+void matScalarDivisionTo(mat *m, float k) {
+    for (unsigned r = 0; r < m->rows; r++) {
+        for (unsigned c = 0; c < m->cols; c++) {
+            m->elements[r][c] /= k;
+        }
+    }
+}
+
+mat matAdd(mat m1, mat m2) {
+    if (m1.rows != m2.rows || m1.cols != m2.cols) {
+        return MAT_UNDEFINED;
+    }
+
+    mat ret = allocateMat(m1.rows, m1.cols); 
+
+    for (unsigned r = 0; r < ret.rows; r++) {
+        for (unsigned c = 0; c < ret.cols; c++) {
+            ret.elements[r][c] = m1.elements[r][c] + m2.elements[r][c];
+        }
+    }
+
+    return ret;
+}
+
+bool matAddTo(mat* m1, mat m2) {
+    if (m1->rows != m2.rows || m1->cols != m2.cols) {
+        return false;
+    }
+
+    for (unsigned r = 0; r < m1->rows; r++) {
+        for (unsigned c = 0; c < m1->cols; c++) {
+            m1->elements[r][c] += m2.elements[r][c];
+        }
+    }
+
+    return true;
+}
+
+mat matSub(mat m1, mat m2) {
+    if (m1.rows != m2.rows || m1.cols != m2.cols) {
+        return MAT_UNDEFINED;
+    }
+
+    mat ret = allocateMat(m1.rows, m1.cols); 
+
+    for (unsigned r = 0; r < ret.rows; r++) {
+        for (unsigned c = 0; c < ret.cols; c++) {
+            ret.elements[r][c] = m1.elements[r][c] - m2.elements[r][c];
+        }
+    }
+
+    return ret;
+}
+
+bool matSubTo(mat* m1, mat m2) {
+    if (m1->rows != m2.rows || m1->cols != m2.cols) {
+        return false;
+    }
+
+    for (unsigned r = 0; r < m1->rows; r++) {
+        for (unsigned c = 0; c < m1->cols; c++) {
+            m1->elements[r][c] -= m2.elements[r][c];
+        }
+    }
+
+    return true;
+}
+
+vec matVecMultiplication(mat m, vec v) {
+    if (m.cols != v.dim) {
+        return VEC_UNDEFINED;
+    }
+
+    vec ret = allocateVec(m.rows);
+
+    for (unsigned r = 0; r < m.rows; r++) {
+        ret.elements[r] = vecDotProd(v, getMatRow(&m, r + 1));
+    }
+
+    return ret;
+}
+
+mat matMultiplication(mat m1, mat m2) {
+    if (m1.cols != m2.rows) {
+        return MAT_UNDEFINED;
+    }
+
+    mat ret = allocateMat(m1.rows, m2.cols);
+
+    vec *m1Row = malloc(m1.rows * sizeof(vec));
+    vec *m2Col = malloc(m2.cols * sizeof(vec));
+
+    for (unsigned r = 0; r < m1.rows; r++) {
+        m1Row[r] = getMatRow(&m1, r + 1);
+    }
+
+    for (unsigned c = 0; c < m2.cols; c++) {
+        m2Col[c] = getMatCol(&m2, c + 1);
+    }
+
+    for (unsigned r = 0; r < m1.rows; r++) {
+        for (unsigned c = 0; c < m2.cols; c++) {
+            ret.elements[r][c] = vecDotProd(m2Col[c], m1Row[r]);
+        }
+    }
+
+    return ret;
+}
