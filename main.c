@@ -43,12 +43,21 @@ int main() {
 
     mat m3 = newMatrix(3, 3, 9, 1., 2., 3., 4., 5., 6., 7., 8., 9.);
     printMat(m3);
+    printMat(transposeMatrix(&m3));
+    swapRows(&m3, 1, 2);        
+    printMat(m3);
+    addRows(&m3, 1, 2);
+    printMat(m3);
+    multiplyRow(&m3, 1, 2.0f);
+    printMat(m3);
+    addMultiple(&m3, 1, 2, 2.0f);
+    printMat(m3);
 
     mat m4 = copyPtrMat(&m1);
     printMat(m4);
 
-    printVec(getMatRow(&m3, 3));
-    printVec(getMatCol(&m3, 1));
+    printVec(getMatRow(&m3, 2));
+    printVec(getMatCol(&m3, 0));
 
     vec v = vector(1., 2., 3.);
 
@@ -60,6 +69,21 @@ int main() {
     mat m5 = newMatrix(2, 3, 6, 2., 1., 4., 0., 1., 1.);
     mat m6 = newMatrix(3, 4, 12, 6., 3., -1., 0., 1., 1., 0., 4., -2., 5., 0., 2.);
     printMat(matMultiplication(m5, m6));
+    
+    mat m7 = matrix(3, 4, 1., 2., 1., 3., 3., -1., -3., -1., 2., 3., 1., 4.);
+    printMat(m7);
+    refMat(&m7);
+    printMat(m7);
+
+    printMat(augmentVec(&m7, &v));
+    printMat(augmentMat(&m7, &m3));
+
+    printMat(m3);
+    printMat(spliceMat(&m3, 1, 1));
+
+    mat m8 = matrix(3, 3, 7., 2., 0., 3., -15., 0., 6., -4., 2.);
+    printf("%f\n", determinant(m8));
+
     #endif
     
     return 0;

@@ -79,7 +79,6 @@ void printMat(mat m) {
 }
 
 vec getMatRow(mat *m, unsigned row) {
-    row--;
     if (row < 0 || row >= m->rows) {
         return VEC_UNDEFINED;
     }
@@ -94,7 +93,6 @@ vec getMatRow(mat *m, unsigned row) {
 }
 
 vec getMatCol(mat *m, unsigned col) {
-    col--;
     if (col < 0 || col >= m->cols) {
         return VEC_UNDEFINED;
     }
@@ -304,6 +302,184 @@ mat matMultiplication(mat m1, mat m2) {
         for (unsigned c = 0; c < m2.cols; c++) {
             ret.elements[r][c] = vecDotProd(m2Col[c], m1Row[r]);
         }
+    }
+
+    return ret;
+}
+
+mat transposeMatrix(mat *m) {
+    mat ret = allocateMat(m->cols, m->rows);
+
+    for (unsigned r = 0; r < ret.rows; r++) {
+        for (unsigned c = 0; c < ret.cols; c++) {
+            ret.elements[r][c] = m->elements[c][r];
+        }
+    }
+
+    return ret;
+}
+
+bool swapRows(mat *m, unsigned r1, unsigned r2) {
+    if (r1 >= m->rows || r2 >= m->rows || r1 == r2) {
+        return false;
+    }
+    float *tmp = m->elements[r1];
+    m->elements[r1] = m->elements[r2];
+    m->elements[r2] = tmp;
+
+    return true;
+}
+
+bool addRows(mat *m, unsigned r1, unsigned r2) {
+    if (r1 >= m->rows || r2 >= m->rows || r1 == r2) {
+        return false;
+    }
+
+    for (unsigned c = 0; c < m->cols; c++) {
+        m->elements[r1][c] += m->elements[r2][c];
+    }
+
+    return true;
+}
+
+bool multiplyRow(mat *m, unsigned r, float k) {
+    if (r >= m->rows || k == 0.0f) {
+        return false;
+    }
+
+    for (unsigned c = 0; c < m->cols; c++) {
+        m->elements[r][c] *= k;
+    }
+    return true;
+}
+
+bool addMultiple(mat *m, unsigned r1, unsigned r2, float k) {
+    if (r1 >= m->rows || r2 >= m->rows || k == 0.0f || r1 == r2) {
+        return false;
+    }
+
+    for (unsigned c = 0; c < m->cols; c++) {
+        m->elements[r1][c] += k * m->elements[r2][c];
+    }
+
+    return true;
+}
+
+void refMat(mat *m) {
+    unsigned currentRow = 0;
+    for (unsigned c = 0; c < m->cols; c++) {
+        unsigned r = currentRow;
+        if (r >= m->rows) {
+            break;
+        }
+
+        for (; r < m->rows; r++) {
+	    if (m->elements[r][c] != 0.0f) {
+		break;
+	    }
+	}
+
+	if (r == m->rows) {
+	    continue;
+	}
+
+	swapRows(m, currentRow, r);
+
+	float factor = 1 / m->elements[currentRow][c];
+	for (unsigned col = c; col < m->cols; col++) {
+	    m->elements[currentRow][col] *= factor;
+	}
+
+	for (r = 0; r < m->rows; r++) {
+	    if (r == currentRow) {
+		continue;
+	    }
+	    addMultiple(m, r, currentRow, - m->elements[r][c]);
+	}
+
+	currentRow++;
+    }
+}
+            
+mat augmentVec(mat *m, vec *v) {
+    if (m->rows != v->dim) {
+	return MAT_UNDEFINED;
+    }
+
+    mat ret = allocateMat(m->rows, m->cols + 1);
+
+    for (unsigned r = 0; r < m->rows; r++) {
+	unsigned c = 0;
+	for (; c < m->cols; c++) {
+	    ret.elements[r][c] = m->elements[r][c];
+	}
+
+	ret.elements[r][c] = v->elements[r];
+    }
+
+    return ret;
+}
+
+mat augmentMat(mat *m, mat *m2) {
+    if (m->rows != m2->rows) {
+	return MAT_UNDEFINED;
+    }
+
+    mat ret = allocateMat(m->rows, m->cols + m2->cols); 
+
+    for (unsigned r = 0; r < m->rows; r++) {
+	unsigned c = 0;
+	for (; c < m->cols; c++) {
+	    ret.elements[r][c] = m->elements[r][c];
+	}
+
+	for (; c < ret.cols; c++) {
+	    ret.elements[r][c] = m2->elements[r][c - m->cols];
+	}
+    }
+
+    return ret;    
+}
+
+mat spliceMat(mat *m, unsigned exclRow, unsigned exclCol) {
+    mat ret = allocateMat(m->rows-1, m->cols-1);
+
+    unsigned rowOffset = 0;
+
+    for(unsigned r = 0; r < ret.rows; r++) {
+	unsigned colOffset = 0;
+
+	if (r == exclRow) {
+	    rowOffset++;
+	}
+
+	for(unsigned c = 0; c < ret.cols; c++) {
+	    if (c == exclCol) {
+		colOffset++;
+	    }
+
+	    ret.elements[r][c] = m->elements[r + rowOffset][c + colOffset];
+	}
+    }
+
+    return ret;
+}
+		
+float determinant(mat m) {
+    if (m.rows != m.cols) {
+	return 0.0;
+    }
+
+    if (m.rows == 1) {
+	return m.elements[0][0];
+    }
+
+    char cofactorSign = 1;
+    float ret = 0.0f;
+
+    for (unsigned c = 0; c < m.cols; c++) {
+	ret += cofactorSign * m.elements[0][c] * determinant(spliceMat(&m, 0, c));
+	cofactorSign = -cofactorSign;
     }
 
     return ret;

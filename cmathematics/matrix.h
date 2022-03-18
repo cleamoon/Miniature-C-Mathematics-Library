@@ -23,6 +23,8 @@ mat zeroMatrix(unsigned int rows, unsigned int cols);
 
 mat newMatrix(unsigned int rows, unsigned int cols, unsigned int size,...);
 
+#define matrix(rows, cols, ...) newMatrix(rows, cols, NUMARGS(float, __VA_ARGS__), ##__VA_ARGS__)
+
 mat copyMat(mat m);
 
 mat copyPtrMat(mat *m);
@@ -64,5 +66,25 @@ bool matSubTo(mat* m1, mat m2);
 vec matVecMultiplication(mat m, vec v);
 
 mat matMultiplication(mat m1, mat m2);
+
+mat transposeMatrix(mat *m);
+
+bool swapRows(mat *m, unsigned r1, unsigned r2);
+
+bool addRows(mat *m, unsigned r1, unsigned r2);
+
+bool multiplyRow(mat *m, unsigned r, float k);
+
+bool addMultiple(mat *m, unsigned r1, unsigned r2, float k);
+
+void refMat(mat *m);
+
+mat augmentVec(mat *m, vec *v);
+
+mat augmentMat(mat *m1, mat *m2);
+
+mat spliceMat(mat *m, unsigned exclRow, unsigned exclCol);
+
+float determinant(mat m);
 
 #endif
