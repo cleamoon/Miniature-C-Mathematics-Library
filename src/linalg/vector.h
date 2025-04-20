@@ -14,4 +14,10 @@ void destroy_vector(Vector *vector);
 
 int vector_scale(Vector *vector, double scalar);
 
+int vector_add(Vector *dest, const Vector *src);
+
+double vector_dot(const Vector *a, const Vector *b);
+
+double vector_norm(const Vector *v);
+
 #endif // VECTOR_H
